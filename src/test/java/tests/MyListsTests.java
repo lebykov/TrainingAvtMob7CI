@@ -68,7 +68,7 @@ public class MyListsTests extends CoreTestCase
         myListsPageObject.swipeByArticleToDelete(article_title);
     }
 
-    // Ex10. Refactor test from Ex5
+    // Ex17. Refactor test from Ex5
     @Test
     public void testSaveTwoArticlesToMyList()
     {
@@ -80,7 +80,7 @@ public class MyListsTests extends CoreTestCase
         SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.typeSearchLine(articleToRemoveSearchLine);
-        searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        searchPageObject.clickByArticleWithSubstring("bject-oriented programming language");
 
         ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
         articlePageObject.waitForTitleElement(articleToRemoveTitle);
@@ -91,6 +91,25 @@ public class MyListsTests extends CoreTestCase
             articlePageObject.addArticlesToMySaved();
             articlePageObject.closeSyncSavedArticlesPopup();
         }
+
+        if (Platform.getInstance().isMW()) {
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+
+            articlePageObject.waitForTitleElement("Java (programming language)");
+
+            assertEquals(
+                    "We are not on the same page after login",
+                    articleToRemoveTitle,
+                    articlePageObject.getArticleTitle("Java (programming language)")
+            );
+
+            articlePageObject.addArticlesToMySaved();
+
+        }
+
         articlePageObject.closeArticle();
 
         // 1.2. Saving second article
@@ -102,7 +121,7 @@ public class MyListsTests extends CoreTestCase
             searchPageObject.clearSearchField();
         }
         searchPageObject.typeSearchLine(articleToKeepSearchLine);
-        searchPageObject.clickByArticleWithSubstring("Programming language");
+        searchPageObject.clickByArticleWithSubstring("rogramming language");
 
         articlePageObject.waitForTitleElement(articleToKeepTitle);
 //        String articleToKeepTitle = articlePageObject.getArticleTitle(articleToKeepTitle);
@@ -115,6 +134,7 @@ public class MyListsTests extends CoreTestCase
 
         // 2. Navigate to list and delete article
         NavigationUI navigationUI = NavigationUIFactory.get(driver);
+        navigationUI.openNavigation();
         navigationUI.clickMyLists();
 
         MyListsPageObject myListsPageObject = MyListsPageObjectFactory.get(driver);
@@ -145,7 +165,7 @@ public class MyListsTests extends CoreTestCase
                     articleToKeepTitle,
                     titleOfRemainingArticle
             );
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             // Search saved articles with title of article to keep and
             // assert that there is exactly one article in the results
             myListsPageObject.searchSavedArticlesByTitle(articleToKeepTitle);
@@ -156,6 +176,12 @@ public class MyListsTests extends CoreTestCase
                     1,
                     amountOfFilteredSavedArticles
             );
+        } else {
+            // For MW search for article to keep title and assert
+            // that there is Stop watching button (green star) in the search results cell
+            searchPageObject.initSearchInput();
+            searchPageObject.typeSearchLine(articleToKeepSearchLine);
+            searchPageObject.waitForWatchedButtonInResultsBySubtitle("rogramming language");
         }
     }
 }

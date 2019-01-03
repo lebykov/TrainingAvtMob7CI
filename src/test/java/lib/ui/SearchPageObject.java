@@ -20,7 +20,8 @@ abstract public class SearchPageObject extends MainPageObject {
         SEARCH_RESULTS_LIST,
         SEARCH_RESULT_TITLE_ELEMENT,
         SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL,
-        CLEAR_SEARCH_FIELD_BUTTON;
+        CLEAR_SEARCH_FIELD_BUTTON,
+        SEARCH_RESULTS_STOP_WATCHING_BUTTON_BY_SUBTITLE_TPL;
 
     public SearchPageObject(RemoteWebDriver driver)
     {
@@ -40,6 +41,14 @@ abstract public class SearchPageObject extends MainPageObject {
         return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL
                 .replace("{TITLE}", title)
                 .replace("{DESCRIPTION}", description);
+    }
+    /* TEMPLATE METHOD */
+
+    /* TEMPLATE METHOD */
+    private static String getWatchedButtonInResultsXpathBySubtitle(String subtitle)
+    {
+        return SEARCH_RESULTS_STOP_WATCHING_BUTTON_BY_SUBTITLE_TPL
+                .replace("{SUBTITLE}", subtitle);
     }
     /* TEMPLATE METHOD */
 
@@ -155,6 +164,15 @@ abstract public class SearchPageObject extends MainPageObject {
                 CLEAR_SEARCH_FIELD_BUTTON,
                 "Cannot find and click on clear search field button",
                 10
+        );
+    }
+
+    public void waitForWatchedButtonInResultsBySubtitle(String subtitle) {
+        String watched_button_xpath = getWatchedButtonInResultsXpathBySubtitle(subtitle);
+        this.waitForElementPresent(
+                watched_button_xpath,
+                "Cannot find Watched button for result with subtitle " + subtitle,
+                5
         );
     }
 }
