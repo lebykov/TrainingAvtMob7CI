@@ -102,7 +102,7 @@ public class SearchTests extends CoreTestCase
 //                everyItem(containsString(searchRequest.toLowerCase())));
     }
 
-    // Ex9
+    // Ex18 refactor EX9 for MW
     @Test
     public void testFirstThreeSearchResultsByTitleAndDescription()
     {
@@ -112,15 +112,15 @@ public class SearchTests extends CoreTestCase
         searchPageObject.typeSearchLine(searchRequest);
         searchPageObject.waitForElementByTitleAndDescription(
                 "Kotlin (programming language)",
-                "Programming language"
+                "rogramming language"
         );
         searchPageObject.waitForElementByTitleAndDescription(
                 "Kotlin-class destroyer",
-                "Class of Soviet cold-war destroyers"
+                "lass of Soviet cold-war destroyers"
         );
         searchPageObject.waitForElementByTitleAndDescription(
                 "Kotlin Island",
-                "Island"
+                "sland"
         );
     }
 }
